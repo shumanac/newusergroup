@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var morgan = require('morgan');
 var mongoose = require('mongoose');
+var cors = require('cors');
 
 var passport = require('passport');
 var MongoStore = require('connect-mongo')(session);
@@ -15,7 +16,7 @@ var config = require('./config/database');
 //var db = mongoose.connect(config.database, { useMongoClient: true });
 
 mongoose.Promise = global.Promise; //we add this because if we dont, you may get a warning that mongoose's default promise library is deprecated
-mongoose.connect(config.database, { useMongoClient: true }, function(err) {
+mongoose.connect(config.database,{ useMongoClient: true }, function(err) {
     if(err) {
         console.log('Connection error');
     }
