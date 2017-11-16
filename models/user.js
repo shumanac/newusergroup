@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt-nodejs');
+var Group = require('./groups.js');
 
 var UserSchema = new Schema({
   username: {
@@ -11,7 +12,8 @@ var UserSchema = new Schema({
   password: {
         type: String,
         required: true
-    }
+    },
+    group:  [ { type: Schema.Types.ObjectId, ref: 'Group',  index: true } ]
 });
 
 UserSchema.pre('save', function (next) {
@@ -43,4 +45,6 @@ UserSchema.methods.comparePassword = function (passw, cb) {
     });
 };
 
-module.exports = mongoose.model('User', UserSchema);
+  var User = mongoose.model('User', UserSchema);
+
+  module.exports = User;
