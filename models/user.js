@@ -13,7 +13,12 @@ var UserSchema = new Schema({
         type: String,
         required: true
     },
-    group:  [ { type: Schema.Types.ObjectId, ref: 'Group',  index: true } ]
+  group:  [
+         { 
+        type: String, 
+        required: true,
+        ref: 'Group'
+    } ]
 });
 
 UserSchema.pre('save', function (next) {

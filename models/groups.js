@@ -7,7 +7,9 @@ var GroupSchema = new Schema({
     type: String,
     required: true
   },
-  users : [ { type: Schema.Types.ObjectId, ref: 'User',  index: true } ]
+  users : [ {
+     type: String,
+     ref: 'User'} ]
 });
 
 var Group = mongoose.model('Group', GroupSchema);
