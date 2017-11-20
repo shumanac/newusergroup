@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Group = require('./groups.js');
+var User = require('./groups.js');
 var Schema = mongoose.Schema;
 
 var AppSchema = new Schema({
@@ -10,6 +11,10 @@ var AppSchema = new Schema({
   group : [ { 
     type: String,
      ref: 'Group',
+   } ],
+   user : [ { 
+    type: String,
+     ref: 'User',
    } ]
 });
 

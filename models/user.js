@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt-nodejs');
 var Group = require('./groups.js');
+var Application = require('./application.js');
 
 var UserSchema = new Schema({
   username: {
@@ -18,7 +19,13 @@ var UserSchema = new Schema({
         type: String, 
         required: true,
         ref: 'Group'
-    } ]
+    } ],
+    application:  [
+        { 
+       type: String, 
+       required: true,
+       ref: 'Application'
+   } ],
 });
 
 UserSchema.pre('save', function (next) {

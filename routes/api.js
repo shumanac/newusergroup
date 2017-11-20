@@ -225,20 +225,33 @@ router.get('/grouplistbyapp/:app', function(req, res) {
 // searching users by application
 
 router.get('/userlistbyapp/:app', function(req, res) {
-  
  
   
-  Application.
-  find({ applicationTitle: req.params.app}).
-  populate('groups').
-  exec(function(error, groups) {
-    groups.find({users})
-    res.send(groups); // Date associated with image
+  
+  User.find({ application: req.params.app}, function(err, users) {
+    var userMap = {};
+
+    users.forEach(function(user) {
+      userMap[user] = user.group;
+    });
+
+    res.send(userMap);  
   });
-  
+        });
  
+
+   
+ 
+  
+  // Application.
+  // find({ applicationTitle: req.params.app}).
+  // populate('user').
+  // exec(function(error, users) {
     
-   });
+  
+  //   res.send(users); // Date associated with user
+  // });
+  
 
 
  
