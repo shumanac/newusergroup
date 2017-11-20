@@ -11,7 +11,7 @@ var Application = require('../models/application');
 var seedGroup = require("../models/group-seeder");
 
 
-// User signup
+// User signup--> User needs to provide username, password and group name
 router.post('/signup', function(req, res, err) {
    
     if (!req.body.username || !req.body.password || !req.body.group) {
@@ -33,11 +33,12 @@ router.post('/signup', function(req, res, err) {
   });
 
 
-//Sign in to user account
+//Sign in to user account by providing username and password
 
   router.post('/signin', function(req, res) {
     User.findOne({
-      username: req.body.username
+      username: req.body.username,
+      password: req.body.password
     }, function(err, user) {
       if (err) throw err;
   
@@ -145,35 +146,11 @@ router.post('/create-app', function(req, res, err) {
  });
 
 
- //User access to the application
- // user who are belongs to group can only access application. Also, access to application depends on the user 
 
- router.post('/application-assigned', function(req, res, err) {
 
-  if (!req.body.users || !req.body.applicationTitle) {
-    res.json({success: false, msg: 'Please pass group title and user.'});
-  } else {
-    var newGroup = new Group({
-      group: req.body.group,
-      users: req.body.users
-    })
-    User.findOne({
-      username: req.body.users
-    }, function(err, user) {
-      if (err) throw err;
-  
-      if (!user) {
-         res.json("Sorry your access is denied");
-        
-      } else {
-        res.status(201).send({success: true, msg: 'Welcome to the application'});
-          }
-        });
  
-  }
-   
- });
-
+ 
+//Getting userlist
  router.get('/userlist', function(req, res) {
   
 
@@ -190,19 +167,21 @@ router.post('/create-app', function(req, res, err) {
      
    });
 
-   //searching users by group
+   //Find users by group
 
    router.get('/userlistbygroup/:group', function(req, res) {
 
   
-    User.find({ group: req.params.group}, function(err, users) {
-      var userMap = {};
+    User.find({ group: req.params.group}, function(err, userGroup) {
+     
   
-      users.forEach(function(user) {
-        userMap[user] = user.group;
+      userGroup.forEach(function(user) {
+        var userGroup = user.group;
       });
   
-      res.send(userMap);  
+        res.send(userGroup)
+
+     
     });
      });
 
@@ -229,37 +208,67 @@ router.get('/userlistbyapp/:app', function(req, res) {
   
   
   User.find({ application: req.params.app}, function(err, users) {
-    var userMap = {};
+    
 
     users.forEach(function(user) {
-      userMap[user] = user.group;
+      var users = user.group;
     });
 
-    res.send(userMap);  
+    res.json(users);  
   });
         });
  
 
-   
  
   
-  // Application.
-  // find({ applicationTitle: req.params.app}).
-  // populate('user').
-  // exec(function(error, users) {
+//searching application by user
+
+router.get('/applistbyuser/:username', function(req, res, next) {
+  
+  Application.find({ user: req.params.username}, function(err, app) {
     
-  
-  //   res.send(users); // Date associated with user
-  // });
-  
+
+    app.forEach(function(app) {
+     var app = app.user;
+    });
+
+    res.json(app);  
+  });
+         });
 
 
- 
-   
+
+    
+
+
+//total count of users in groups
+
+
+router.get('/usercountingroup/:group', function(req, res) {
+  
+    
+     
+          User.count({
+            group: req.params.group
+          }, function(err, result){
+            if(err){
+              next(err);
+
+            }else{
+              res.json("Total Users in the group is"+" " + result);
+            }
+          })
+  
+       
+      });
+       
+
+
+
       
  
 
 
 
-
+ 
   module.exports = router;
