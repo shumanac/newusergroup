@@ -3,7 +3,7 @@ var User = require('./user.js');
 var Schema = mongoose.Schema;
 
 var GroupSchema = new Schema({
-  groupTitle: {
+  group: {
     type: String,
     required: true
   },

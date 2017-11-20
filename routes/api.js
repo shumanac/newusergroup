@@ -78,11 +78,11 @@ router.post('/signup', function(req, res, err) {
 //To assign members to group
 
 router.post('/assign-member',function(req, res) {
-  if (!req.body.users || !req.body.groupTitle) {
+  if (!req.body.users || !req.body.group) {
     res.json({success: false, msg: 'Please pass group title and user.'});
   } else {
     var newGroup = new Group({
-      groupTitle: req.body.groupTitle,
+      group: req.body.group,
       users: req.body.users
     })
     User.findOne({
@@ -92,7 +92,7 @@ router.post('/assign-member',function(req, res) {
   
       if (!user) {
           Group.findOne({
-            groupTitle: req.body.groupTitle,
+            group: req.body.group,
             users: req.body.users
           }, function(err, groupData){
             if(err) throw err;
@@ -100,7 +100,7 @@ router.post('/assign-member',function(req, res) {
             if(!groupData){
               newGroup.save(function(err) {
                 console.log(err);
-                if (req.body.groupTitle = newGroup.groupTitle) {
+                if (req.body.group= newGroup.group) {
                 
                  // return res.json({success: false, msg: 'Group Name already exists.'});   // cannot create duplicate group 
                 }
@@ -150,26 +150,103 @@ router.post('/create-app', function(req, res, err) {
 
  router.post('/application-assigned', function(req, res, err) {
 
-  if (!req.body.users) {
-    res.json({success: false, msg: 'You have to be a user to enter into the application.'});
-  }else{
-       var users = req.body.users
-  
-    User.find(function (err, users) {
-      if (err) return  console.error(err);
-     
-        if(req.body.users = users){
-          console.log("i should die");
-        }else{
-          console.log("u should die");
-        }
-      
+  if (!req.body.users || !req.body.applicationTitle) {
+    res.json({success: false, msg: 'Please pass group title and user.'});
+  } else {
+    var newGroup = new Group({
+      group: req.body.group,
+      users: req.body.users
     })
-
-
-
+    User.findOne({
+      username: req.body.users
+    }, function(err, user) {
+      if (err) throw err;
+  
+      if (!user) {
+         res.json("Sorry your access is denied");
+        
+      } else {
+        res.status(201).send({success: true, msg: 'Welcome to the application'});
+          }
+        });
+ 
   }
    
  });
+
+ router.get('/userlist', function(req, res) {
+  
+
+    User.find({}, function(err, users) {
+      var userMap = {};
+  
+      users.forEach(function(user) {
+        userMap[user._id] = user;
+      });
+  
+      res.send(userMap);  
+    });
+ 
+     
+   });
+
+   //searching users by group
+
+   router.get('/userlistbygroup/:group', function(req, res) {
+
+  
+    User.find({ group: req.params.group}, function(err, users) {
+      var userMap = {};
+  
+      users.forEach(function(user) {
+        userMap[user] = user.group;
+      });
+  
+      res.send(userMap);  
+    });
+     });
+
+  
+   
+// searching groups by application
+
+
+router.get('/grouplistbyapp/:app', function(req, res) {
+  
+ 
+    Application.find({ applicationTitle: req.params.app}, function(err, app) {
+       
+    
+        res.send(app);  
+      });
+       });
+ 
+
+// searching users by application
+
+router.get('/userlistbyapp/:app', function(req, res) {
+  
+ 
+  
+  Application.
+  find({ applicationTitle: req.params.app}).
+  populate('groups').
+  exec(function(error, groups) {
+    groups.find({users})
+    res.send(groups); // Date associated with image
+  });
+  
+ 
+    
+   });
+
+
+ 
+   
+      
+ 
+
+
+
 
   module.exports = router;
