@@ -263,6 +263,25 @@ router.get('/usercountingroup/:group', function(req, res) {
       });
        
 
+//User access to application
+
+
+router.get('/useraccess/:username/:application', function(req, res) {
+  User.findOne({
+    username: req.params.username,
+    application: req.params.application
+  }, function(err, user) {
+    if (err) throw err;
+
+    if (!user) {
+      res.status(401).send({success: false, msg: 'Access Denied.'});
+    } else {
+          res.status(401).send({success: true, msg: 'Welcome'});
+        }
+      });
+    })
+ 
+
 
 
       
